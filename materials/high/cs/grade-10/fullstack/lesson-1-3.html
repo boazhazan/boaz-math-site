@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HTML מתקדם — טפסים, סמנטיקה ומדיה | Full-Stack Development | בועז חזן</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;--accent:#f59e0b;--accent-dark:#d97706;--text:#1e293b;--text-light:#64748b;--bg:#ffffff;--bg-soft:#f8fafc;--border:#e2e8f0;--success:#10b981;--error:#ef4444;--radius:12px;--radius-sm:8px;--shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);--shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);--unit-color:#2563eb}
+body{font-family:'Heebo',sans-serif;background:var(--bg-soft);color:var(--text);line-height:1.6}
+.topbar{background:var(--bg);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow)}
+.topbar-title{font-weight:800;font-size:1.1rem;color:var(--primary-dark)}
+.topbar a{color:var(--primary);text-decoration:none;font-size:.85rem;font-weight:600}
+.topbar a:hover{text-decoration:underline}
+.lesson-container{max-width:800px;margin:0 auto;padding:24px 16px 60px}
+.lesson-header{margin-bottom:32px}
+.lesson-unit-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:.85rem;font-weight:600;color:#fff;margin-bottom:12px}
+.lesson-title{font-size:2rem;font-weight:900;margin-bottom:8px}
+.lesson-subtitle{font-size:1.1rem;color:var(--text-light)}
+.lesson-section{margin-bottom:40px}
+.lesson-section h2{font-size:1.4rem;font-weight:800;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.lesson-section h3{font-size:1.15rem;font-weight:700;margin:16px 0 8px}
+.lesson-section p{line-height:1.8;margin-bottom:12px}
+.lesson-section ul,.lesson-section ol{margin:8px 0 16px 24px;line-height:2}
+.code-block{background:#1e293b;color:#e2e8f0;border-radius:8px;padding:20px;margin:16px 0;font-family:'Courier New',monospace;font-size:.9rem;direction:ltr;text-align:left;overflow-x:auto;line-height:1.6;white-space:pre}
+.code-block .tag{color:#f472b6}
+.code-block .attr{color:#a78bfa}
+.code-block .value{color:#34d399}
+.code-block .comment{color:#64748b;font-style:italic}
+.lesson-tip{background:#dbeafe;border-right:4px solid var(--primary);border-radius:8px;padding:16px 20px;margin:16px 0}
+.lesson-tip.warning{background:#fef3c7;border-right-color:var(--accent)}
+.lesson-tip.success{background:#d1fae5;border-right-color:#10b981}
+.lesson-tip strong{display:block;margin-bottom:4px}
+.lesson-tip p{margin:0;font-size:.95rem}
+.code-editor-container{border:2px solid var(--border);border-radius:12px;overflow:hidden;margin:20px 0}
+.code-editor-header{background:#1e293b;color:#fff;padding:10px 16px;font-size:.85rem;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.code-editor-textarea{width:100%;min-height:300px;padding:16px;font-family:'Courier New',monospace;font-size:.9rem;border:none;resize:vertical;direction:ltr;text-align:left;background:#0f172a;color:#e2e8f0;line-height:1.6;tab-size:2}
+.code-editor-textarea:focus{outline:none}
+.code-editor-preview{border-top:2px solid var(--border);min-height:120px;background:#fff}
+.code-editor-preview iframe{width:100%;min-height:200px;border:none}
+.code-editor-run{padding:8px 20px;background:#10b981;color:#fff;border:none;border-radius:6px;font-family:inherit;font-weight:600;cursor:pointer;font-size:.85rem}
+.code-editor-run:hover{background:#059669}
+.exercise-box{background:var(--bg);border:2px solid var(--primary);border-radius:12px;padding:24px;margin:24px 0}
+.exercise-box h3{color:var(--primary);margin-bottom:12px}
+.exercise-box ol{margin:8px 0 0 24px;line-height:2.2}
+.ref-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+.ref-table th{background:var(--unit-color);color:#fff;padding:10px 14px;text-align:right;font-weight:700}
+.ref-table td{padding:10px 14px;border-bottom:1px solid var(--border)}
+.ref-table tr:nth-child(even){background:var(--bg-soft)}
+.ref-table code{direction:ltr;unicode-bidi:embed;background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:.85rem}
+.lesson-nav{display:flex;justify-content:space-between;gap:16px;margin:48px 0 32px;padding-top:24px;border-top:2px solid var(--border)}
+.lesson-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;background:var(--bg-soft);border:2px solid var(--border);border-radius:8px;color:var(--text);text-decoration:none;font-weight:600;transition:all .2s}
+.lesson-nav a:hover{border-color:var(--primary);color:var(--primary)}
+@media(max-width:768px){.lesson-title{font-size:1.5rem}.lesson-nav{flex-direction:column}.code-block{font-size:.8rem;padding:12px}.ref-table{font-size:.8rem}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">Full-Stack Development</div>
+  <a href="../../../../../materials.html">← חזרה לחומרי לימוד</a>
+</div>
+
+<div class="lesson-container">
+  <div class="lesson-header">
+    <span class="lesson-unit-badge" style="background:#2563eb">יחידה 1: Frontend</span>
+    <h1 class="lesson-title">שיעור 1.3 — HTML מתקדם</h1>
+    <p class="lesson-subtitle">טפסים, תגיות סמנטיות ומדיה</p>
+  </div>
+
+  <div>
+
+  <!-- Section 1: Forms -->
+  <div class="lesson-section">
+    <h2>1. טפסים (Forms)</h2>
+    <p>טפסים הם הדרך העיקרית לקבל קלט מהמשתמש. תגית <code>&lt;form&gt;</code> עוטפת את כל שדות הקלט ומגדירה לאן הנתונים נשלחים.</p>
+
+    <h3>מבנה בסיסי</h3>
+    <div class="code-block"><span class="tag">&lt;form</span> <span class="attr">action</span>=<span class="value">"/submit"</span> <span class="attr">method</span>=<span class="value">"post"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;label</span> <span class="attr">for</span>=<span class="value">"name"</span><span class="tag">&gt;</span>שם מלא:<span class="tag">&lt;/label&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="value">"text"</span> <span class="attr">id</span>=<span class="value">"name"</span> <span class="attr">name</span>=<span class="value">"name"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;button</span> <span class="attr">type</span>=<span class="value">"submit"</span><span class="tag">&gt;</span>שליחה<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/form&gt;</span></div>
+
+    <div class="lesson-tip">
+      <strong>action ו-method</strong>
+      <p><code>action</code> — לאן נשלחים הנתונים (URL). <code>method</code> — איך נשלחים: <code>get</code> (בשורת הכתובת) או <code>post</code> (בגוף הבקשה, מאובטח יותר).</p>
+    </div>
+
+    <h3>סוגי input נפוצים</h3>
+    <table class="ref-table">
+      <tr><th>סוג</th><th>תיאור</th><th>דוגמה</th></tr>
+      <tr><td><code>text</code></td><td>טקסט חופשי</td><td>שם, כתובת</td></tr>
+      <tr><td><code>password</code></td><td>סיסמה (מוסתרת)</td><td>התחברות</td></tr>
+      <tr><td><code>email</code></td><td>כתובת מייל (מאומת)</td><td>דוא"ל</td></tr>
+      <tr><td><code>number</code></td><td>מספר בלבד</td><td>גיל, כמות</td></tr>
+      <tr><td><code>date</code></td><td>בוחר תאריך</td><td>תאריך לידה</td></tr>
+      <tr><td><code>tel</code></td><td>מספר טלפון</td><td>נייד</td></tr>
+      <tr><td><code>color</code></td><td>בוחר צבע</td><td>צבע מועדף</td></tr>
+      <tr><td><code>range</code></td><td>סליידר</td><td>דירוג 1-10</td></tr>
+      <tr><td><code>checkbox</code></td><td>תיבת סימון</td><td>הסכמה לתנאים</td></tr>
+      <tr><td><code>radio</code></td><td>בחירה אחת מקבוצה</td><td>מגדר</td></tr>
+    </table>
+
+    <h3>textarea, select ו-button</h3>
+    <div class="code-block"><span class="comment">&lt;!-- שדה טקסט ארוך --&gt;</span>
+<span class="tag">&lt;textarea</span> <span class="attr">name</span>=<span class="value">"msg"</span> <span class="attr">rows</span>=<span class="value">"4"</span> <span class="attr">cols</span>=<span class="value">"40"</span><span class="tag">&gt;&lt;/textarea&gt;</span>
+
+<span class="comment">&lt;!-- רשימה נפתחת --&gt;</span>
+<span class="tag">&lt;select</span> <span class="attr">name</span>=<span class="value">"city"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="value">""</span><span class="tag">&gt;</span>בחר עיר<span class="tag">&lt;/option&gt;</span>
+  <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="value">"tlv"</span><span class="tag">&gt;</span>תל אביב<span class="tag">&lt;/option&gt;</span>
+  <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="value">"jlm"</span><span class="tag">&gt;</span>ירושלים<span class="tag">&lt;/option&gt;</span>
+<span class="tag">&lt;/select&gt;</span>
+
+<span class="comment">&lt;!-- סוגי כפתורים --&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">type</span>=<span class="value">"submit"</span><span class="tag">&gt;</span>שלח<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">type</span>=<span class="value">"reset"</span><span class="tag">&gt;</span>נקה<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">type</span>=<span class="value">"button"</span><span class="tag">&gt;</span>כפתור רגיל<span class="tag">&lt;/button&gt;</span></div>
+  </div>
+
+  <!-- Section 2: Semantic HTML -->
+  <div class="lesson-section">
+    <h2>2. תגיות סמנטיות</h2>
+    <p>תגיות סמנטיות מתארות את <strong>המשמעות</strong> של התוכן, לא רק את המראה שלו. זה חשוב לנגישות (קוראי מסך), ל-SEO (מנועי חיפוש) ולקריאות הקוד.</p>
+
+    <h3>לפני ואחרי: div-soup לעומת סמנטי</h3>
+    <div class="code-block"><span class="comment">&lt;!-- ❌ לא סמנטי — הכל div --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="value">"header"</span><span class="tag">&gt;</span>...<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="value">"nav"</span><span class="tag">&gt;</span>...<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="value">"content"</span><span class="tag">&gt;</span>...<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="value">"footer"</span><span class="tag">&gt;</span>...<span class="tag">&lt;/div&gt;</span>
+
+<span class="comment">&lt;!-- ✓ סמנטי — משמעות ברורה --&gt;</span>
+<span class="tag">&lt;header&gt;</span>...<span class="tag">&lt;/header&gt;</span>
+<span class="tag">&lt;nav&gt;</span>...<span class="tag">&lt;/nav&gt;</span>
+<span class="tag">&lt;main&gt;</span>...<span class="tag">&lt;/main&gt;</span>
+<span class="tag">&lt;footer&gt;</span>...<span class="tag">&lt;/footer&gt;</span></div>
+
+    <table class="ref-table">
+      <tr><th>תגית</th><th>תפקיד</th></tr>
+      <tr><td><code>&lt;header&gt;</code></td><td>כותרת עליונה של הדף או חלק</td></tr>
+      <tr><td><code>&lt;nav&gt;</code></td><td>אזור ניווט (תפריט)</td></tr>
+      <tr><td><code>&lt;main&gt;</code></td><td>התוכן הראשי (פעם אחת בדף)</td></tr>
+      <tr><td><code>&lt;section&gt;</code></td><td>חלק נושאי בתוך הדף</td></tr>
+      <tr><td><code>&lt;article&gt;</code></td><td>תוכן עצמאי (פוסט, מאמר)</td></tr>
+      <tr><td><code>&lt;aside&gt;</code></td><td>תוכן צדדי (סיידבר)</td></tr>
+      <tr><td><code>&lt;footer&gt;</code></td><td>כותרת תחתונה</td></tr>
+    </table>
+
+    <div class="lesson-tip success">
+      <strong>כלל אצבע</strong>
+      <p>אם אתם יכולים להחליף div בתגית סמנטית שמתאימה — עשו את זה! קוראי מסך משתמשים בתגיות האלה כדי לנווט בדף.</p>
+    </div>
+  </div>
+
+  <!-- Section 3: Media -->
+  <div class="lesson-section">
+    <h2>3. מדיה — וידאו, אודיו ו-iframe</h2>
+
+    <h3>וידאו</h3>
+    <div class="code-block"><span class="tag">&lt;video</span> <span class="attr">src</span>=<span class="value">"movie.mp4"</span> <span class="attr">controls</span> <span class="attr">width</span>=<span class="value">"600"</span><span class="tag">&gt;</span>
+  הדפדפן שלך לא תומך בתגית video.
+<span class="tag">&lt;/video&gt;</span></div>
+    <p>תכונות שימושיות: <code>controls</code> (כפתורי ניגון), <code>autoplay</code> (ניגון אוטומטי), <code>loop</code> (חזרה), <code>muted</code> (ללא קול), <code>poster</code> (תמונת תצוגה).</p>
+
+    <h3>אודיו</h3>
+    <div class="code-block"><span class="tag">&lt;audio</span> <span class="attr">src</span>=<span class="value">"song.mp3"</span> <span class="attr">controls</span><span class="tag">&gt;&lt;/audio&gt;</span></div>
+
+    <h3>iframe — הטמעת תוכן חיצוני</h3>
+    <div class="code-block"><span class="comment">&lt;!-- הטמעת סרטון YouTube --&gt;</span>
+<span class="tag">&lt;iframe</span> <span class="attr">width</span>=<span class="value">"560"</span> <span class="attr">height</span>=<span class="value">"315"</span>
+  <span class="attr">src</span>=<span class="value">"https://www.youtube.com/embed/VIDEO_ID"</span>
+  <span class="attr">allowfullscreen</span><span class="tag">&gt;&lt;/iframe&gt;</span></div>
+
+    <h3>figure ו-figcaption</h3>
+    <div class="code-block"><span class="tag">&lt;figure&gt;</span>
+  <span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="value">"photo.jpg"</span> <span class="attr">alt</span>=<span class="value">"נוף"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;figcaption&gt;</span>נוף הרי הגליל, 2025<span class="tag">&lt;/figcaption&gt;</span>
+<span class="tag">&lt;/figure&gt;</span></div>
+
+    <div class="lesson-tip warning">
+      <strong>נגישות</strong>
+      <p>תמיד הוסיפו <code>alt</code> לתמונות ו-<code>controls</code> לוידאו/אודיו. בלעדיהם, משתמשים עם מוגבלויות לא יוכלו לגשת לתוכן.</p>
+    </div>
+  </div>
+
+  <!-- Section 4: Code Editor -->
+  <div class="lesson-section">
+    <h2>4. נסו בעצמכם — עורך קוד חי</h2>
+    <p>הקוד מציג טופס יצירת קשר עם סוגי input שונים. שנו, הוסיפו שדות ולחצו "הרצה" לראות את התוצאה.</p>
+
+    <div class="code-editor-container">
+      <div class="code-editor-header">
+        <span>index.html</span>
+        <div style="display:flex;gap:8px">
+          <button class="code-editor-run" onclick="runCode()">&#9654; הרצה</button>
+        </div>
+      </div>
+      <textarea id="codeEditor" class="code-editor-textarea"><!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    form { max-width: 400px; }
+    label { display: block; margin-top: 12px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px; }
+    button { margin-top: 16px; padding: 10px 24px; background: #2563eb; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>צור קשר</h1>
+  <form>
+    <label for="name">שם מלא:</label>
+    <input type="text" id="name" placeholder="הכנס שם">
+
+    <label for="email">אימייל:</label>
+    <input type="email" id="email" placeholder="you@example.com">
+
+    <label for="phone">טלפון:</label>
+    <input type="tel" id="phone" placeholder="050-1234567">
+
+    <label for="subject">נושא:</label>
+    <select id="subject">
+      <option value="">בחר נושא</option>
+      <option value="general">שאלה כללית</option>
+      <option value="lesson">שיעור פרטי</option>
+      <option value="bug">דיווח על באג</option>
+    </select>
+
+    <label for="msg">הודעה:</label>
+    <textarea id="msg" rows="4" placeholder="כתוב את ההודעה..."></textarea>
+
+    <label>
+      <input type="checkbox" style="width:auto"> אני מסכים/ה לתנאי השימוש
+    </label>
+
+    <button type="button" onclick="alert('הטופס נשלח!')">שלח</button>
+  </form>
+</body>
+</html></textarea>
+      <div class="code-editor-preview">
+        <iframe id="previewFrame"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise -->
+  <div class="exercise-box">
+    <h3>תרגיל — בנו טופס הרשמה</h3>
+    <p>שנו את הקוד בעורך ובנו טופס הרשמה שכולל:</p>
+    <ol>
+      <li>שם מלא (text)</li>
+      <li>אימייל (email)</li>
+      <li>סיסמה (password)</li>
+      <li>תאריך לידה (date)</li>
+      <li>מגדר — radio buttons (זכר/נקבה/אחר)</li>
+      <li>עיר מגורים — select עם 3 אפשרויות</li>
+      <li>תיבת סימון "אני מסכים לתנאים"</li>
+      <li>כפתור שליחה</li>
+    </ol>
+  </div>
+
+  <!-- Navigation -->
+  <div class="lesson-nav">
+    <a href="lesson-1-2.html">&rarr; שיעור קודם: 1.2</a>
+    <a href="lesson-1-4.html">שיעור הבא: 1.4 &larr;</a>
+  </div>
+
+  </div><!-- end -->
+</div>
+
+<script>
+function runCode(){
+  var code=document.getElementById('codeEditor').value;
+  var iframe=document.getElementById('previewFrame');
+  var doc=iframe.contentDocument||iframe.contentWindow.document;
+  doc.open();
+  doc.write(code);
+  doc.close();
+  iframe.style.height='350px';
+}
+
+document.getElementById('codeEditor').addEventListener('keydown',function(e){
+  if(e.key==='Tab'){
+    e.preventDefault();
+    var start=this.selectionStart;
+    var end=this.selectionEnd;
+    this.value=this.value.substring(0,start)+'  '+this.value.substring(end);
+    this.selectionStart=this.selectionEnd=start+2;
+  }
+});
+
+window.addEventListener('DOMContentLoaded',function(){runCode();});
+</script>
+
+<script src="../../../../../js/ask-teacher-btn.js"></script>
+</body>
+</html>

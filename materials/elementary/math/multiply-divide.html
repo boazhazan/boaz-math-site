@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>אלופי הכפל והחילוק</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky:#4FC3F7;--sun:#FFD54F;--grass:#81C784;--coral:#FF7043;
+    --purple:#7E57C2;--mint:#4DB6AC;--bg:#E3F2FD;--card:#ffffff;
+    --correct:#66BB6A;--wrong:#EF5350;--text:#263238;--skip:#78909C;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Rubik',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:40px;
+    background-image:radial-gradient(circle at 10% 20%,rgba(255,213,79,0.25) 0%,transparent 40%),
+    radial-gradient(circle at 90% 80%,rgba(79,195,247,0.3) 0%,transparent 40%),
+    radial-gradient(circle at 50% 50%,rgba(129,199,132,0.15) 0%,transparent 60%)}
+
+  /* Header */
+  .page-header{text-align:center;padding:24px 16px 16px}
+  .page-header h1{font-family:'Fredoka One',cursive;font-size:clamp(1.8rem,5vw,2.8rem);color:var(--purple);text-shadow:2px 2px 0 rgba(126,87,194,0.2)}
+  .page-header .sub{font-size:1rem;color:#546E7A;margin-top:4px}
+
+  /* Mode bar */
+  .mode-bar{display:flex;justify-content:center;gap:8px;padding:0 16px;margin-bottom:16px;flex-wrap:wrap}
+  .mode-btn{font-family:'Fredoka One',cursive;font-size:1rem;padding:10px 24px;border:3px solid transparent;border-radius:50px;cursor:pointer;transition:all 0.2s;background:#fff;color:var(--text)}
+  .mode-btn.mul{border-color:var(--coral)}.mode-btn.div{border-color:var(--sky)}.mode-btn.mix{border-color:var(--purple)}
+  .mode-btn.active.mul{background:var(--coral);color:#fff}.mode-btn.active.div{background:var(--sky);color:#fff}.mode-btn.active.mix{background:var(--purple);color:#fff}
+
+  /* Dots */
+  .dots-wrap{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:8px 16px;max-width:700px;margin:0 auto 16px}
+  .dt{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;cursor:pointer;border:2px solid #ccc;background:#fff;color:#999;transition:all 0.2s}
+  .dt.active{border-color:var(--purple);box-shadow:0 0 0 3px rgba(126,87,194,0.3);transform:scale(1.15);color:var(--purple);font-weight:900}
+  .dt.solved{background:var(--correct);border-color:var(--correct);color:#fff}
+  .dt.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff}
+  .dt.skipped{background:var(--skip);border-color:var(--skip);color:#fff}
+
+  /* Card */
+  .card-wrap{display:flex;justify-content:center;padding:0 16px}
+  .card{background:var(--card);border-radius:28px;padding:32px 28px;max-width:460px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.08);position:relative;text-align:center}
+  .mascot{font-size:2.5rem;display:block;margin-bottom:8px}
+  .q-badge{display:inline-block;background:var(--sun);color:var(--text);font-family:'Fredoka One',cursive;font-size:0.85rem;padding:4px 16px;border-radius:20px;margin-bottom:8px}
+  .q-num{font-size:0.85rem;color:#90A4AE;margin-bottom:12px}
+  .question{font-family:'Fredoka One',cursive;font-size:clamp(1.8rem,5vw,2.6rem);color:var(--text);margin-bottom:20px;direction:ltr;display:inline-block;animation:pop 0.3s ease}
+  @keyframes pop{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+  /* Options */
+  .options-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .opt-btn{font-family:'Fredoka One',cursive;font-size:1.5rem;padding:16px;border:3px solid #e0e0e0;border-radius:16px;background:#fff;color:var(--text);cursor:pointer;transition:all 0.15s}
+  .opt-btn:hover:not(:disabled){transform:translateY(-2px);border-color:var(--purple);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+  .opt-btn:active:not(:disabled){transform:scale(0.95)}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;transform:scale(1.05)}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff}
+  .opt-btn:disabled{cursor:default;opacity:0.7}
+
+  .feedback{font-family:'Fredoka One',cursive;font-size:1.1rem;min-height:32px;margin-bottom:12px;transition:all 0.3s}
+  .feedback.correct{color:var(--correct)}.feedback.wrong{color:var(--wrong)}
+
+  /* Nav */
+  .nav-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .nav-btn{font-family:'Fredoka One',cursive;font-size:0.9rem;padding:10px 20px;border:none;border-radius:50px;cursor:pointer;transition:all 0.15s}
+  .nav-btn:hover:not(:disabled){transform:translateY(-1px)}.nav-btn:disabled{opacity:0.4;cursor:default}
+  .btn-prev{background:#e0e0e0;color:var(--text)}.btn-skip{background:var(--skip);color:#fff}
+  .btn-next{background:var(--purple);color:#fff}.btn-finish{background:var(--coral);color:#fff}
+
+  /* Summary overlay */
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:center;padding:20px}
+  .overlay.show{display:flex}
+  .sum-card{background:#fff;border-radius:24px;padding:32px 24px;max-width:500px;width:100%;max-height:85vh;overflow-y:auto;text-align:center}
+  .sum-title{font-family:'Fredoka One',cursive;font-size:2rem;margin-bottom:4px}
+  .sum-sub{font-size:1rem;color:#546E7A;margin-bottom:20px}
+  .sum-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;text-align:right;margin-bottom:20px}
+  .sum-item{padding:10px 14px;border-radius:12px;font-size:0.9rem;direction:ltr;text-align:center}
+  .sum-item.s{background:#e8f5e9;border:2px solid var(--correct)}.sum-item.w{background:#ffebee;border:2px solid var(--wrong)}
+  .sum-item.sk{background:#eceff1;border:2px solid var(--skip)}
+  .sum-expr{font-weight:700;font-size:1rem}.sum-ans{font-size:0.85rem;color:#546E7A}
+  .sum-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+  .restart-btn{font-family:'Fredoka One',cursive;font-size:1rem;padding:12px 28px;border:none;border-radius:50px;cursor:pointer;color:#fff;transition:all 0.15s}
+  .restart-btn:hover{transform:translateY(-2px)}
+  .btn-redo-wrong{background:var(--wrong)}.btn-redo-skip{background:var(--skip)}.btn-redo-all{background:var(--coral)}
+
+  /* Confetti */
+  .cf-host{position:fixed;inset:0;pointer-events:none;z-index:300;display:none}.cf-host.show{display:block}
+  .cdot{position:absolute;width:9px;height:9px;border-radius:2px;animation:cfall linear forwards}
+  @keyframes cfall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(540deg);opacity:0}}
+
+  @media(max-width:500px){.card{padding:24px 16px}.opt-btn{font-size:1.2rem;padding:12px}.dt{width:24px;height:24px;font-size:0.6rem}}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>🌟 אלופי הכפל והחילוק</h1>
+  <p class="sub">כפל וחילוק עד 100 — בחרו מצב והתחילו!</p>
+</div>
+
+<div class="mode-bar">
+  <button class="mode-btn mul active" onclick="setMode('mul')">✖️ כפל</button>
+  <button class="mode-btn div" onclick="setMode('div')">➗ חילוק</button>
+  <button class="mode-btn mix" onclick="setMode('mix')">🔀 מעורב</button>
+</div>
+
+<div class="dots-wrap" id="dotsWrap"></div>
+
+<div class="card-wrap">
+  <div class="card">
+    <span class="mascot" id="mascot">🦊</span>
+    <div class="q-badge" id="qBadge">כפל</div>
+    <div class="q-num" id="qNum">שאלה 1 מתוך 30</div>
+    <div class="question" id="question"></div>
+    <div class="options-grid" id="optionsGrid"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav-row">
+      <button class="nav-btn btn-prev" id="prevBtn" onclick="goTo(curIdx-1)">◀ הקודם</button>
+      <button class="nav-btn btn-skip" id="skipBtn" onclick="skip()">דלג ⟫</button>
+      <button class="nav-btn btn-next" id="nextBtn" onclick="goNext()">הבא ▶</button>
+      <button class="nav-btn btn-finish" id="finishBtn" onclick="showSummary()">סיכום 📋</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="sum-card">
+    <div class="sum-title" id="sumTitle"></div>
+    <div class="sum-sub" id="sumSub"></div>
+    <div id="sumBody"></div>
+    <div class="sum-actions">
+      <button class="restart-btn btn-redo-wrong" id="redoWrongBtn" onclick="redoSubset('wrong')">🔄 חזור על הטעויות</button>
+      <button class="restart-btn btn-redo-skip" id="redoSkipBtn" onclick="redoSubset('skip')">❓ תרגל דילוגים</button>
+      <button class="restart-btn" id="redoBothBtn" onclick="redoSubset('both')" style="background:#7E57C2">🔄 טעויות + דילוגים</button>
+      <button class="restart-btn btn-redo-all" onclick="restart()">🔄 הכל מחדש</button>
+    </div>
+  </div>
+</div>
+
+<div class="cf-host" id="cfHost"></div>
+
+<script>
+const TOTAL=30;
+let mode='mul',pool=[],status=[],userAns=[],curIdx=0;
+const mascots=['🦊','🐨','🦁','🐯','🐸','🦄','🐙','🦋','🐬','🌟'];
+const praises=['כל הכבוד! 🎉','מצוין! ⭐','נהדר! 🌟','אלוף! 🏆','יפה מאוד! 💪','מושלם! ✨'];
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=rand(0,i);[b[i],b[j]]=[b[j],b[i]]}return b}
+
+function genQ(){
+  let type=mode;if(mode==='mix')type=Math.random()<0.5?'mul':'div';
+  let a,b,answer,expr,badge;
+  if(type==='mul'){
+    a=rand(2,10);b=rand(2,10);while(a*b>100){a=rand(2,10);b=rand(2,10)}
+    answer=a*b;expr=`${a} × ${b}`;badge='כפל';
+  } else {
+    answer=rand(2,10);b=rand(2,10);a=answer*b;while(a>100){answer=rand(2,10);b=rand(2,10);a=answer*b}
+    expr=`${a} ÷ ${b}`;badge='חילוק';
+  }
+  // Generate 4 options
+  const opts=new Set([answer]);
+  while(opts.size<4){const d=rand(-15,15);const v=answer+d;if(v>0&&v<=100&&v!==answer)opts.add(v)}
+  return {expr,answer,badge,options:shuffle([...opts])};
+}
+
+function buildPool(items){
+  if(items){pool=items}else{pool=[];for(let i=0;i<TOTAL;i++)pool.push(genQ());pool=shuffle(pool)}
+  status=pool.map(()=>'pending');userAns=pool.map(()=>null);curIdx=0;
+}
+
+// ── DOTS ──
+function renderDots(){
+  const w=document.getElementById('dotsWrap');w.innerHTML='';
+  const lk=(false);
+  pool.forEach((_,i)=>{
+    const d=document.createElement('div');const s=status[i];
+    d.className='dt'+(s==='solved'?' solved':s==='wrong'?' wrong':s==='skipped'?' skipped':'')+(i===curIdx?' active':'');
+    d.textContent=(i+1)+(lk&&i>0?' 🔒':'');d.onclick=()=>goTo(i);w.appendChild(d);
+  });
+}
+
+// ── RENDER ──
+function render(){
+  const q=pool[curIdx],s=status[curIdx];
+  document.getElementById('mascot').textContent=mascots[curIdx%mascots.length];
+  document.getElementById('qBadge').textContent=q.badge;
+  document.getElementById('qNum').textContent=`שאלה ${curIdx+1} מתוך ${pool.length}`;
+  const qEl=document.getElementById('question');qEl.textContent=q.expr+' = ?';
+  qEl.classList.remove('pop');void qEl.offsetWidth;qEl.classList.add('pop');
+
+  const fb=document.getElementById('feedback');
+  fb.textContent='';fb.className='feedback';
+
+  const grid=document.getElementById('optionsGrid');grid.innerHTML='';
+  q.options.forEach(opt=>{
+    const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;
+    if(s==='solved'){
+      btn.disabled=true;
+      if(opt===q.answer)btn.classList.add('correct');
+      if(opt===userAns[curIdx]&&opt!==q.answer)btn.classList.add('wrong');
+    } else if(s==='wrong'){
+      btn.disabled=true;
+      if(opt===q.answer)btn.classList.add('correct');
+      if(opt===userAns[curIdx])btn.classList.add('wrong');
+    } else {
+      btn.onclick=()=>checkAns(btn,opt);
+    }
+    grid.appendChild(btn);
+  });
+
+  if(s==='solved'){fb.textContent='✅ נכון!';fb.className='feedback correct'}
+  else if(s==='wrong'){fb.textContent=`❌ ענית ${userAns[curIdx]} — הנכון: ${q.answer}`;fb.className='feedback wrong'}
+  else if(s==='skipped'){fb.textContent='⟫ דילגת — אפשר לחזור ולענות!'}
+
+  document.getElementById('prevBtn').disabled=curIdx===0;
+  document.getElementById('nextBtn').disabled=curIdx>=pool.length-1;
+  document.getElementById('skipBtn').disabled=s==='solved'||s==='wrong';
+  renderDots();
+}
+
+function checkAns(btn,val){
+  const q=pool[curIdx];userAns[curIdx]=val;
+  const fb=document.getElementById('feedback');
+  const allBtns=document.querySelectorAll('.opt-btn');
+
+  if(val===q.answer){
+    status[curIdx]='solved';btn.classList.add('correct');
+    fb.textContent=praises[rand(0,praises.length-1)];fb.className='feedback correct';
+  } else {
+    status[curIdx]='wrong';btn.classList.add('wrong');
+    fb.textContent=`❌ ענית ${val} — הנכון: ${q.answer}`;fb.className='feedback wrong';
+    allBtns.forEach(b=>{if(+b.textContent===q.answer)b.classList.add('correct')});
+  }
+  allBtns.forEach(b=>b.disabled=true);
+  document.getElementById('skipBtn').disabled=true;
+  renderDots();
+
+  // Auto-advance after 1.2s if not last (but only if logged in — free users stop at q1)
+  if(curIdx<pool.length-1){
+    if(false){
+      if(typeof showAuthModal==='function')setTimeout(()=>showAuthModal(),1000);
+    } else {
+      setTimeout(()=>{curIdx++;render()},1200);
+    }
+  }
+}
+
+function goTo(i){if(i>0&&false){if(typeof showAuthModal==='function')showAuthModal();return}if(i>=0&&i<pool.length){curIdx=i;render()}}
+function goNext(){if(false){if(typeof showAuthModal==='function')showAuthModal();return}if(curIdx<pool.length-1){curIdx++;render()}}
+function skip(){if(false){if(typeof showAuthModal==='function')showAuthModal();return}if(status[curIdx]==='pending'){status[curIdx]='skipped'}if(curIdx<pool.length-1){curIdx++;render()}else render()}
+
+// ── SUMMARY ──
+function showSummary(){
+  const solved=status.filter(s=>s==='solved').length;
+  const wrongs=status.filter(s=>s==='wrong').length;
+  const notDone=status.filter(s=>s==='skipped'||s==='pending').length;
+  const pct=pool.length?Math.round(solved/pool.length*100):0;
+
+  let emoji,title;
+  if(pct===100){emoji='🏆';title='מושלם!'}
+  else if(pct>=80){emoji='🌟';title='כל הכבוד!'}
+  else if(pct>=60){emoji='💪';title='יפה מאוד!'}
+  else{emoji='📚';title='ממשיכים להתאמן!'}
+
+  document.getElementById('sumTitle').textContent=emoji+' '+title;
+  document.getElementById('sumSub').textContent=`${solved} נכון, ${wrongs} טעויות, ${notDone} לא בוצע (${pct}%)`;
+
+  let h='<div class="sum-grid">';
+  pool.forEach((q,i)=>{
+    const s=status[i];
+    const cls=s==='solved'?'s':s==='wrong'?'w':'sk';
+    const icon=s==='solved'?'✅':s==='wrong'?'❌':'❓';
+    let ansStr='';
+    if(s==='solved')ansStr=`= ${q.answer}`;
+    else if(s==='wrong')ansStr=`ענית ${userAns[i]} | נכון: ${q.answer}`;
+    else ansStr='לא בוצע';
+    h+=`<div class="sum-item ${cls}" onclick="document.getElementById('overlay').classList.remove('show');goTo(${i})">
+      <div class="sum-expr">${icon} ${q.expr}</div><div class="sum-ans">${ansStr}</div></div>`;
+  });
+  h+='</div>';
+  document.getElementById('sumBody').innerHTML=h;
+
+  document.getElementById('redoWrongBtn').style.display=wrongs?'':'none';
+  document.getElementById('redoSkipBtn').style.display=notDone?'':'none';
+  document.getElementById('redoBothBtn').style.display=(wrongs||notDone)?'':'none';
+
+  document.getElementById('overlay').classList.add('show');
+  if(pct>=60)launchConfetti();
+}
+
+function redoSubset(type){
+  const items=[];
+  pool.forEach((q,i)=>{
+    const s=status[i];
+    const isWrong=s==='wrong';
+    const isNotDone=s==='skipped'||s==='pending';
+    if((type==='wrong'&&isWrong)||(type==='skip'&&isNotDone)||
+       (type==='both'&&(isWrong||isNotDone))){
+      const copy=JSON.parse(JSON.stringify(q));
+      copy.options=shuffle(copy.options);
+      items.push(copy);
+    }
+  });
+  if(!items.length)return;
+  document.getElementById('overlay').classList.remove('show');
+  buildPool(items);render();
+}
+
+function restart(){
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('cfHost').classList.remove('show');
+  buildPool();render();
+}
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.mode-btn.'+m).classList.add('active');
+  restart();
+}
+
+function launchConfetti(){
+  const w=document.getElementById('cfHost');w.innerHTML='';w.classList.add('show');
+  const colors=['#FF7043','#FFD54F','#81C784','#4FC3F7','#7E57C2','#FF4081'];
+  for(let i=0;i<60;i++){const d=document.createElement('div');d.className='cdot';d.style.left=Math.random()*100+'vw';d.style.background=colors[rand(0,colors.length-1)];d.style.animationDuration=(1.5+Math.random()*2)+'s';d.style.animationDelay=Math.random()*0.8+'s';w.appendChild(d)}
+  setTimeout(()=>w.classList.remove('show'),3500);
+}
+
+buildPool();render();
+document.addEventListener('DOMContentLoaded',function(){renderDots();});
+</script>
+  
+<script src="../../../js/ask-teacher-btn.js"></script>
+</body>
+</html>

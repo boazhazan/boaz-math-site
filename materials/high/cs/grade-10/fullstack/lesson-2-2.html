@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>תנאים ולולאות | Full-Stack Development | בועז חזן</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;--accent:#f59e0b;--accent-dark:#d97706;--text:#1e293b;--text-light:#64748b;--bg:#ffffff;--bg-soft:#f8fafc;--border:#e2e8f0;--success:#10b981;--error:#ef4444;--radius:12px;--radius-sm:8px;--shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);--shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);--unit-color:#d97706}
+body{font-family:'Heebo',sans-serif;background:var(--bg-soft);color:var(--text);line-height:1.6}
+.topbar{background:var(--bg);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow)}
+.topbar-title{font-weight:800;font-size:1.1rem;color:var(--primary-dark)}
+.topbar a{color:var(--primary);text-decoration:none;font-size:.85rem;font-weight:600}
+.topbar a:hover{text-decoration:underline}
+.lesson-container{max-width:800px;margin:0 auto;padding:24px 16px 60px}
+.lesson-header{margin-bottom:32px}
+.lesson-unit-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:.85rem;font-weight:600;color:#fff;margin-bottom:12px}
+.lesson-title{font-size:2rem;font-weight:900;margin-bottom:8px}
+.lesson-subtitle{font-size:1.1rem;color:var(--text-light)}
+.lesson-section{margin-bottom:40px}
+.lesson-section h2{font-size:1.4rem;font-weight:800;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.lesson-section h3{font-size:1.15rem;font-weight:700;margin:16px 0 8px}
+.lesson-section p{line-height:1.8;margin-bottom:12px}
+.lesson-section ul,.lesson-section ol{margin:8px 0 16px 24px;line-height:2}
+.code-block{background:#1e293b;color:#e2e8f0;border-radius:8px;padding:20px;margin:16px 0;font-family:'Courier New',monospace;font-size:.9rem;direction:ltr;text-align:left;overflow-x:auto;line-height:1.6;white-space:pre}
+.code-block .keyword{color:#818cf8}
+.code-block .string{color:#fbbf24}
+.code-block .function{color:#38bdf8}
+.code-block .comment{color:#64748b;font-style:italic}
+.lesson-tip{background:#dbeafe;border-right:4px solid var(--primary);border-radius:8px;padding:16px 20px;margin:16px 0}
+.lesson-tip.warning{background:#fef3c7;border-right-color:var(--accent)}
+.lesson-tip.success{background:#d1fae5;border-right-color:#10b981}
+.lesson-tip strong{display:block;margin-bottom:4px}
+.lesson-tip p{margin:0;font-size:.95rem}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:.88em;direction:ltr;unicode-bidi:embed}
+.ref-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+.ref-table th{background:var(--unit-color);color:#fff;padding:10px 14px;text-align:right;font-weight:700}
+.ref-table td{padding:10px 14px;border-bottom:1px solid var(--border)}
+.ref-table tr:nth-child(even){background:var(--bg-soft)}
+.code-editor-container{border:2px solid var(--border);border-radius:12px;overflow:hidden;margin:20px 0}
+.code-editor-header{background:#1e293b;color:#fff;padding:10px 16px;font-size:.85rem;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.code-editor-textarea{width:100%;min-height:280px;padding:16px;font-family:'Courier New',monospace;font-size:.9rem;border:none;resize:vertical;direction:ltr;text-align:left;background:#0f172a;color:#e2e8f0;line-height:1.6;tab-size:2}
+.code-editor-textarea:focus{outline:none}
+.code-editor-preview{border-top:2px solid var(--border)}
+.code-editor-preview iframe{width:100%;min-height:80px;border:none;display:none}
+.console-panel{background:#0f172a;color:#e2e8f0;padding:12px 16px;font-family:'Courier New',monospace;font-size:.85rem;min-height:100px;max-height:200px;overflow-y:auto;direction:ltr;text-align:left}
+.console-line{padding:2px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.console-error{color:#f87171}
+.console-alert{color:#fbbf24}
+.code-editor-run{padding:8px 20px;background:#10b981;color:#fff;border:none;border-radius:6px;font-family:inherit;font-weight:600;cursor:pointer;font-size:.85rem}
+.code-editor-run:hover{background:#059669}
+.code-editor-reset{padding:8px 16px;background:transparent;color:#94a3b8;border:1px solid #475569;border-radius:6px;font-family:inherit;font-weight:600;cursor:pointer;font-size:.85rem}
+.exercise-box{background:var(--bg);border:2px solid var(--unit-color);border-radius:12px;padding:24px;margin:24px 0}
+.exercise-box h3{color:var(--unit-color);margin-bottom:12px}
+.exercise-box ol{margin:8px 0 0 24px;line-height:2.2}
+.lesson-nav{display:flex;justify-content:space-between;gap:16px;margin:48px 0 32px;padding-top:24px;border-top:2px solid var(--border)}
+.lesson-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;background:var(--bg-soft);border:2px solid var(--border);border-radius:8px;color:var(--text);text-decoration:none;font-weight:600;transition:all .2s}
+.lesson-nav a:hover{border-color:var(--unit-color);color:var(--unit-color)}
+@media(max-width:768px){.lesson-title{font-size:1.5rem}.lesson-nav{flex-direction:column}.code-block{font-size:.8rem;padding:12px}.code-editor-textarea{min-height:220px;font-size:.82rem}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">Full-Stack Development</div>
+  <a href="../../../../../materials.html">← חזרה לחומרי לימוד</a>
+</div>
+
+<div class="lesson-container">
+  <div class="lesson-header">
+    <span class="lesson-unit-badge" style="background:#d97706">יחידה 2: JavaScript</span>
+    <h1 class="lesson-title">שיעור 2.2 — תנאים ולולאות</h1>
+    <p class="lesson-subtitle">if / else, switch, for, while</p>
+  </div>
+
+  <div>
+
+  <!-- Section 1 -->
+  <div class="lesson-section">
+    <h2>1. תנאי if / else if / else</h2>
+    <p>תנאים מאפשרים לתוכנית לקבל החלטות. הקוד בתוך הבלוק ירוץ רק אם התנאי מתקיים.</p>
+    <div class="code-block"><span class="keyword">let</span> grade = <span class="string">85</span>;
+
+<span class="keyword">if</span> (grade >= <span class="string">90</span>) {
+  <span class="function">console.log</span>(<span class="string">"מצוין!"</span>);
+} <span class="keyword">else if</span> (grade >= <span class="string">70</span>) {
+  <span class="function">console.log</span>(<span class="string">"טוב מאוד"</span>);
+} <span class="keyword">else if</span> (grade >= <span class="string">55</span>) {
+  <span class="function">console.log</span>(<span class="string">"עובר"</span>);
+} <span class="keyword">else</span> {
+  <span class="function">console.log</span>(<span class="string">"נכשל"</span>);
+}</div>
+    <div class="lesson-tip">
+      <strong>שימו לב לסדר!</strong>
+      <p>התנאים נבדקים מלמעלה למטה. ברגע שתנאי מתקיים, שאר הבלוקים מדולגים. לכן שימו את התנאי הכי מחמיר ראשון.</p>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="lesson-section">
+    <h2>2. אופרטורים להשוואה ולוגיים</h2>
+    <h3>אופרטורי השוואה</h3>
+    <table class="ref-table">
+      <tr><th>אופרטור</th><th>משמעות</th><th>דוגמה</th></tr>
+      <tr><td><code>==</code></td><td>שווה (בלי בדיקת סוג)</td><td><code>"5" == 5</code> → true</td></tr>
+      <tr><td><code>===</code></td><td>שווה (עם בדיקת סוג)</td><td><code>"5" === 5</code> → false</td></tr>
+      <tr><td><code>!=</code></td><td>שונה</td><td><code>3 != 4</code> → true</td></tr>
+      <tr><td><code>!==</code></td><td>שונה (עם בדיקת סוג)</td><td><code>"3" !== 3</code> → true</td></tr>
+      <tr><td><code>&gt;</code> / <code>&lt;</code></td><td>גדול / קטן מ</td><td><code>10 > 5</code> → true</td></tr>
+      <tr><td><code>&gt;=</code> / <code>&lt;=</code></td><td>גדול-שווה / קטן-שווה</td><td><code>5 >= 5</code> → true</td></tr>
+    </table>
+
+    <div class="lesson-tip warning">
+      <strong>== לעומת === ?</strong>
+      <p>תמיד העדיפו <code>===</code> כדי להימנע מהפתעות. <code>"5" == 5</code> הוא true (JS ממיר אוטומטית), אבל <code>"5" === 5</code> הוא false (סוג שונה).</p>
+    </div>
+
+    <h3>אופרטורים לוגיים</h3>
+    <table class="ref-table">
+      <tr><th>אופרטור</th><th>משמעות</th><th>דוגמה</th></tr>
+      <tr><td><code>&&</code></td><td>AND — שניהם נכונים</td><td><code>age > 18 && hasLicense</code></td></tr>
+      <tr><td><code>||</code></td><td>OR — לפחות אחד נכון</td><td><code>isAdmin || isOwner</code></td></tr>
+      <tr><td><code>!</code></td><td>NOT — הופך</td><td><code>!isLocked</code></td></tr>
+    </table>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="lesson-section">
+    <h2>3. switch-case</h2>
+    <p>כשיש הרבה ערכים אפשריים לבדוק, <code>switch</code> קריא יותר מ-if מרובה:</p>
+    <div class="code-block"><span class="keyword">let</span> day = <span class="keyword">new</span> <span class="function">Date</span>().<span class="function">getDay</span>();
+
+<span class="keyword">switch</span> (day) {
+  <span class="keyword">case</span> <span class="string">0</span>: <span class="function">console.log</span>(<span class="string">"יום ראשון"</span>); <span class="keyword">break</span>;
+  <span class="keyword">case</span> <span class="string">1</span>: <span class="function">console.log</span>(<span class="string">"יום שני"</span>);   <span class="keyword">break</span>;
+  <span class="keyword">case</span> <span class="string">2</span>: <span class="function">console.log</span>(<span class="string">"יום שלישי"</span>); <span class="keyword">break</span>;
+  <span class="keyword">case</span> <span class="string">3</span>: <span class="function">console.log</span>(<span class="string">"יום רביעי"</span>); <span class="keyword">break</span>;
+  <span class="keyword">case</span> <span class="string">4</span>: <span class="function">console.log</span>(<span class="string">"יום חמישי"</span>); <span class="keyword">break</span>;
+  <span class="keyword">case</span> <span class="string">5</span>: <span class="function">console.log</span>(<span class="string">"יום שישי"</span>);  <span class="keyword">break</span>;
+  <span class="keyword">case</span> <span class="string">6</span>: <span class="function">console.log</span>(<span class="string">"שבת"</span>);      <span class="keyword">break</span>;
+  <span class="keyword">default</span>: <span class="function">console.log</span>(<span class="string">"לא ידוע"</span>);
+}</div>
+    <div class="lesson-tip warning">
+      <strong>אל תשכחו break!</strong>
+      <p>בלי <code>break</code> הקוד ימשיך לרוץ גם ב-case הבא (fall-through). זה כמעט תמיד באג.</p>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="lesson-section">
+    <h2>4. לולאת for</h2>
+    <p>לולאה חוזרת על קוד מספר פעמים ידוע מראש.</p>
+    <div class="code-block"><span class="comment">// לוח כפל של 7</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="string">1</span>; i &lt;= <span class="string">10</span>; i++) {
+  <span class="function">console.log</span>(<span class="string">"7 × "</span> + i + <span class="string">" = "</span> + (<span class="string">7</span> * i));
+}</div>
+    <p>שלושת חלקי ה-for: <strong>אתחול</strong> (<code>let i = 1</code>) → <strong>תנאי</strong> (<code>i &lt;= 10</code>) → <strong>קידום</strong> (<code>i++</code>).</p>
+
+    <div class="code-block"><span class="comment">// סכום מספרים מ-1 עד 100</span>
+<span class="keyword">let</span> sum = <span class="string">0</span>;
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="string">1</span>; i &lt;= <span class="string">100</span>; i++) {
+  sum += i;
+}
+<span class="function">console.log</span>(<span class="string">"סכום: "</span> + sum); <span class="comment">// 5050</span></div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="lesson-section">
+    <h2>5. לולאת while</h2>
+    <p>לולאה שחוזרת כל עוד תנאי מתקיים — שימושית כשלא יודעים מראש כמה פעמים לחזור.</p>
+    <div class="code-block"><span class="comment">// הכפלה עד שעוברים 1000</span>
+<span class="keyword">let</span> num = <span class="string">1</span>;
+<span class="keyword">let</span> count = <span class="string">0</span>;
+
+<span class="keyword">while</span> (num &lt; <span class="string">1000</span>) {
+  num *= <span class="string">2</span>;
+  count++;
+}
+<span class="function">console.log</span>(<span class="string">"הגענו ל-"</span> + num + <span class="string">" אחרי "</span> + count + <span class="string">" הכפלות"</span>);</div>
+
+    <h3>break ו-continue</h3>
+    <div class="code-block"><span class="comment">// break — עוצר את הלולאה לגמרי</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="string">1</span>; i &lt;= <span class="string">100</span>; i++) {
+  <span class="keyword">if</span> (i === <span class="string">50</span>) <span class="keyword">break</span>;    <span class="comment">// עוצר ב-50</span>
+  <span class="function">console.log</span>(i);
+}
+
+<span class="comment">// continue — מדלג על הסיבוב הנוכחי</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="string">1</span>; i &lt;= <span class="string">10</span>; i++) {
+  <span class="keyword">if</span> (i % <span class="string">2</span> === <span class="string">0</span>) <span class="keyword">continue</span>; <span class="comment">// מדלג על זוגיים</span>
+  <span class="function">console.log</span>(i);              <span class="comment">// מדפיס רק אי-זוגיים</span>
+}</div>
+  </div>
+
+  <!-- Code Editor -->
+  <div class="lesson-section">
+    <h2>6. נסו בעצמכם — עורך קוד חי</h2>
+    <p>מחשבון ציונים — בודק ציון ומדפיס הערכה. נסו לשנות את הציון ולהריץ!</p>
+
+    <div class="code-editor-container">
+      <div class="code-editor-header">
+        <span>script.js</span>
+        <div style="display:flex;gap:8px">
+          <button class="code-editor-reset" onclick="resetCode()">איפוס</button>
+          <button class="code-editor-run" onclick="runCode()">&#9654; הרצה</button>
+        </div>
+      </div>
+      <textarea id="codeEditor" class="code-editor-textarea">// מחשבון ציונים
+let grade = 85;
+
+if (grade >= 90) {
+  console.log(grade + " — מצוין! 🌟");
+} else if (grade >= 70) {
+  console.log(grade + " — טוב מאוד 👍");
+} else if (grade >= 55) {
+  console.log(grade + " — עובר ✓");
+} else {
+  console.log(grade + " — נכשל ✗");
+}
+
+// לוח כפל של 7
+console.log("\nלוח כפל של 7:");
+for (let i = 1; i <= 10; i++) {
+  console.log("7 × " + i + " = " + (7 * i));
+}
+
+// סכום מספרים מ-1 עד הציון
+let sum = 0;
+for (let i = 1; i <= grade; i++) {
+  sum += i;
+}
+console.log("\nסכום 1 עד " + grade + " = " + sum);</textarea>
+      <div class="code-editor-preview">
+        <iframe id="previewFrame"></iframe>
+      </div>
+      <div class="console-panel" id="consolePanel"></div>
+    </div>
+  </div>
+
+  <!-- Exercise -->
+  <div class="exercise-box">
+    <h3>אתגר</h3>
+    <ol>
+      <li>כתבו לולאת for שמדפיסה את כל המספרים מ-1 עד 20 שמתחלקים ב-3</li>
+      <li>כתבו לולאת while שמוצאת את המספר הראשון שריבועו גדול מ-500</li>
+      <li>כתבו switch שמקבל מספר חודש (1-12) ומדפיס את שם החודש בעברית</li>
+    </ol>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-2-1.html">&rarr; שיעור קודם: 2.1</a>
+    <a href="lesson-2-3.html">שיעור הבא: 2.3 &larr;</a>
+  </div>
+
+  </div>
+</div>
+
+<script>
+var editor = document.getElementById('codeEditor');
+var consoleEl = document.getElementById('consolePanel');
+var iframe = document.getElementById('previewFrame');
+
+var DEFAULT_CODE = editor.value;
+
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'console') appendConsole(e.data.text, '');
+  if (e.data && e.data.type === 'console-error') appendConsole(e.data.text, 'console-error');
+  if (e.data && e.data.type === 'alert') appendConsole('Alert: ' + e.data.text, 'console-alert');
+});
+
+editor.addEventListener('keydown', function(e) {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    var s = this.selectionStart, end = this.selectionEnd;
+    this.value = this.value.substring(0, s) + '  ' + this.value.substring(end);
+    this.selectionStart = this.selectionEnd = s + 2;
+  }
+});
+
+function appendConsole(text, cls) {
+  var line = document.createElement('div');
+  line.className = 'console-line' + (cls ? ' ' + cls : '');
+  line.textContent = text;
+  consoleEl.appendChild(line);
+  consoleEl.scrollTop = consoleEl.scrollHeight;
+}
+
+function runCode() {
+  consoleEl.innerHTML = '';
+  var userCode = editor.value;
+  var interceptor = '<script>\n(function(){\nvar _log=console.log;\nconsole.log=function(){\nvar args=Array.from(arguments).map(function(a){if(typeof a==="object")try{return JSON.stringify(a)}catch(e){return String(a)}return String(a)}).join(" ");\n_log.apply(console,arguments);\nparent.postMessage({type:"console",text:args},"*");\n};\nwindow.onerror=function(msg,src,line){parent.postMessage({type:"console-error",text:"Error (line "+line+"): "+msg},"*");};\n})();\n<\/script>\n';
+  var html = '<!DOCTYPE html><html><head></head><body>' + interceptor + '<script>\n' + userCode + '\n<\/script></body></html>';
+  var doc = iframe.contentDocument || iframe.contentWindow.document;
+  doc.open(); doc.write(html); doc.close();
+}
+
+function resetCode() {
+  editor.value = DEFAULT_CODE;
+  consoleEl.innerHTML = '';
+}
+
+window.addEventListener('DOMContentLoaded', function() { setTimeout(runCode, 300); });
+</script>
+
+<script src="../../../../../js/ask-teacher-btn.js"></script>
+</body>
+</html>
+
